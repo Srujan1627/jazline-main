@@ -102,7 +102,9 @@ async def startup_event():
         new_url = "https://jazline-backend-v2.onrender.com/static/products"
         
         # Update products
-        async for prod in db.products.find():
+        products_cursor = db.products.find()
+        products = await products_cursor.to_list(length=None)
+        for prod in products:
             if "image" in prod and isinstance(prod["image"], str) and prod["image"].startswith(old_url):
                 await db.products.update_one({"_id": prod["_id"]}, {"$set": {"image": prod["image"].replace(old_url, new_url)}})
             
@@ -112,7 +114,9 @@ async def startup_event():
                     await db.products.update_one({"_id": prod["_id"]}, {"$set": {"images": new_imgs}})
                     
         # Update kits
-        async for kit in db.kits.find():
+        kits_cursor = db.kits.find()
+        kits = await kits_cursor.to_list(length=None)
+        for kit in kits:
             if "image" in kit and isinstance(kit["image"], str) and kit["image"].startswith(old_url):
                 await db.kits.update_one({"_id": kit["_id"]}, {"$set": {"image": kit["image"].replace(old_url, new_url)}})
                 
