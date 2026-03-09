@@ -57,6 +57,8 @@ export default function LoginScreen() {
           
           google.accounts.id.initialize({
             client_id: GOOGLE_CLIENT_ID,
+            use_fedcm_for_prompt: true,
+            cancel_on_tap_outside: false,
             callback: async (response: any) => {
               setGoogleLoading(true);
               try {

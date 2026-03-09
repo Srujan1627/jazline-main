@@ -20,7 +20,7 @@ services:
     name: jazline-frontend
     env: node
     rootDir: frontend
-    buildCommand: npm install && npm run build
+    buildCommand: npm install && npm run build && cp serve.json dist/serve.json
     startCommand: npx serve dist -s -p $PORT
     envVars:
       - key: EXPO_PUBLIC_BACKEND_URL
