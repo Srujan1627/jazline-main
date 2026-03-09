@@ -96,6 +96,27 @@ async def startup_event():
     try:
         logging.info("🚀 Jazline API Starting Up...")
         await seed_if_empty()
+        
+        # ONE-TIME MIGRATION: Fix localhost image URLs in DB to point to Render
+        old_url = "http://127.0.0.1:8001/static/products"
+        new_url = "https://jazline-backend-v2.onrender.com/static/products"
+        
+        # Update products
+        async for prod in db.products.find():
+            if "image" in prod and isinstance(prod["image"], str) and prod["image"].startswith(old_url):
+                await db.products.update_one({"_id": prod["_id"]}, {"$set": {"image": prod["image"].replace(old_url, new_url)}})
+            
+            if "images" in prod and isinstance(prod["images"], list):
+                new_imgs = [i.replace(old_url, new_url) if isinstance(i, str) and i.startswith(old_url) else i for i in prod["images"]]
+                if new_imgs != prod["images"]:
+                    await db.products.update_one({"_id": prod["_id"]}, {"$set": {"images": new_imgs}})
+                    
+        # Update kits
+        async for kit in db.kits.find():
+            if "image" in kit and isinstance(kit["image"], str) and kit["image"].startswith(old_url):
+                await db.kits.update_one({"_id": kit["_id"]}, {"$set": {"image": kit["image"].replace(old_url, new_url)}})
+                
+        logging.info("IMAGE URL MIGRATION COMPLETE!")
     except Exception as e:
         logging.error(f"Startup task failed (soft failure): {e}")
 
