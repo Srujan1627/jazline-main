@@ -54,10 +54,12 @@ export default function RentalDetailScreen() {
 
     const deposit = product.security_deposit || 0;
     const delivery = 100; // Fixed delivery charge for rentals
-    const total = rentalPrice + deposit + delivery;
+    const gst = Math.round(rentalPrice * 0.18);
+    const total = rentalPrice + gst + deposit + delivery;
 
     return {
       rental: Math.round(rentalPrice),
+      gst,
       deposit,
       delivery,
       total: Math.round(total),
@@ -204,6 +206,10 @@ export default function RentalDetailScreen() {
               <View style={styles.costRow}>
                 <Text style={styles.costLabel}>Rental Charges</Text>
                 <Text style={styles.costValue}>₹{cost.rental}</Text>
+              </View>
+              <View style={styles.costRow}>
+                <Text style={styles.costLabel}>GST (18%)</Text>
+                <Text style={styles.costValue}>₹{cost.gst}</Text>
               </View>
               <View style={styles.costRow}>
                 <Text style={styles.costLabel}>Security Deposit</Text>

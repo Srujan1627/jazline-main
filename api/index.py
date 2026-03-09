@@ -15,7 +15,9 @@ import jwt
 import bcrypt
 import httpx
 
+import sys
 ROOT_DIR = Path(__file__).parent
+sys.path.append(str(ROOT_DIR))
 load_dotenv(ROOT_DIR / '.env')
 
 # Config
@@ -46,6 +48,14 @@ except Exception as e:
 
 # Create the main app without a prefix
 app = FastAPI()
+
+@app.get("/api/health")
+async def health_check():
+    return {"status": "ok", "timestamp": datetime.utcnow().isoformat()}
+
+@app.get("/api")
+async def api_root():
+    return {"message": "Jazline Medical Supplies API", "version": "1.0"}
 
 app.add_middleware(
     CORSMiddleware,
@@ -289,6 +299,7 @@ class Rental(BaseModel):
     rental_duration: int  # in days
     rental_type: str  # "weekly" or "monthly"
     rental_price: float
+    gst: float = 0.0
     security_deposit: float
     delivery_charges: float
     total: float
@@ -710,9 +721,10 @@ async def create_rental(request: CreateRentalRequest):
         else:
             rental_price = product["rental_price_per_month"] * (request.rental_duration / 30)
         
+        gst = round(rental_price * 0.18, 2)
         delivery_charges = 100.0  # Fixed for rentals
         security_deposit = product["security_deposit"]
-        total = rental_price + security_deposit + delivery_charges
+        total = rental_price + gst + security_deposit + delivery_charges
         
         rental_data = {
             "user_id": request.user_id,
@@ -722,6 +734,7 @@ async def create_rental(request: CreateRentalRequest):
             "rental_duration": request.rental_duration,
             "rental_type": request.rental_type,
             "rental_price": rental_price,
+            "gst": gst,
             "security_deposit": security_deposit,
             "delivery_charges": delivery_charges,
             "total": total,

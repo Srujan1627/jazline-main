@@ -17,7 +17,7 @@ import { Address } from '../../types';
 import { Colors } from '../../constants/Theme';
 
 export default function RentalBookingScreen() {
-  const { productId, productName, duration, rentalPrice, deposit, delivery } = useLocalSearchParams();
+  const { productId, productName, duration, rentalPrice, gst, deposit, delivery } = useLocalSearchParams();
   const router = useRouter();
   const { user } = useAuth();
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
@@ -32,7 +32,7 @@ export default function RentalBookingScreen() {
     }
   }, [user]);
 
-  const totalAmount = Number(rentalPrice) + Number(deposit) + Number(delivery);
+  const totalAmount = Number(rentalPrice) + Number(gst) + Number(deposit) + Number(delivery);
 
   const handleBookRental = async () => {
     if (!user) {
@@ -208,6 +208,10 @@ export default function RentalBookingScreen() {
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>Rental Charges</Text>
               <Text style={styles.priceValue}>₹{rentalPrice}</Text>
+            </View>
+            <View style={styles.priceRow}>
+              <Text style={styles.priceLabel}>GST (18%)</Text>
+              <Text style={styles.priceValue}>₹{gst}</Text>
             </View>
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>Security Deposit</Text>
