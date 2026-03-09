@@ -82,7 +82,7 @@ export default function KitDetailScreen() {
         </View>
 
         {/* Kit Image */}
-        <Image source={{ uri: kit.image }} style={styles.kitImage} />
+        <Image source={{ uri: kit.image }} style={styles.kitImage} resizeMode="contain" />
 
         {/* Content */}
         <View style={styles.contentContainer}>

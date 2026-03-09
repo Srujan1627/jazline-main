@@ -74,6 +74,7 @@ export default function CartScreen() {
                     <Image
                       source={{ uri: item.product.image }}
                       style={styles.productImage}
+                      resizeMode="contain"
                     />
                     <View style={styles.itemDetails}>
                       <Text style={styles.productName} numberOfLines={2}>

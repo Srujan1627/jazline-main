@@ -115,7 +115,7 @@ export default function RentalDetailScreen() {
         </View>
 
         {/* Product Image */}
-        <Image source={{ uri: product.image }} style={styles.productImage} />
+        <Image source={{ uri: product.image }} style={styles.productImage} resizeMode="contain" />
 
         {/* Product Info */}
         <View style={styles.contentContainer}>

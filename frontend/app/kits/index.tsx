@@ -70,7 +70,7 @@ export default function CuratedKitsScreen() {
               style={styles.kitCard}
               onPress={() => router.push(`/kits/${kit._id}`)}
             >
-              <Image source={{ uri: kit.image }} style={styles.kitImage} />
+              <Image source={{ uri: kit.image }} style={styles.kitImage} resizeMode="contain" />
               <View style={styles.kitContent}>
                 <Text style={styles.kitName}>{kit.name}</Text>
                 <Text style={styles.kitBestFor}>{kit.best_for}</Text>

@@ -59,7 +59,7 @@ export default function WishlistScreen() {
             {wishlist.map((product) => (
               <View key={product._id} style={styles.productCard}>
                 <TouchableOpacity onPress={() => router.push(`/products/${product._id}`)}>
-                  <Image source={{ uri: product.image }} style={styles.productImage} />
+                  <Image source={{ uri: product.image }} style={styles.productImage} resizeMode="contain" />
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.removeButton}
