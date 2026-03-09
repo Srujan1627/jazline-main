@@ -82,7 +82,9 @@ export default function KitDetailScreen() {
         </View>
 
         {/* Kit Image */}
-        <Image source={{ uri: kit.image }} style={styles.kitImage} resizeMode="contain" />
+        <View style={styles.imageSection}>
+          <Image source={{ uri: kit.image }} style={styles.productImage} resizeMode="contain" />
+        </View>
 
         {/* Content */}
         <View style={styles.contentContainer}>
@@ -256,10 +258,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
-  kitImage: {
+  imageSection: {
     width: '100%',
-    height: 250,
-    marginTop: 56,
+    height: 320,
+    backgroundColor: '#F8FAFB',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+    paddingTop: 64, // Add padding to avoid overlapping with header
+  },
+  productImage: {
+    width: '100%',
+    height: '100%',
   },
   contentContainer: {
     backgroundColor: '#FFFFFF',
