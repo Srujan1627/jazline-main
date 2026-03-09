@@ -115,7 +115,9 @@ export default function RentalDetailScreen() {
         </View>
 
         {/* Product Image */}
-        <Image source={{ uri: product.image }} style={styles.productImage} resizeMode="contain" />
+        <View style={styles.imageSection}>
+          <Image source={{ uri: product.image }} style={styles.productImage} resizeMode="contain" />
+        </View>
 
         {/* Product Info */}
         <View style={styles.contentContainer}>
@@ -317,6 +319,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
+  },
+  imageSection: {
+    width: '100%',
+    height: 320,
+    backgroundColor: '#F8FAFB',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+    paddingTop: 64, // Add padding to avoid overlapping with header
   },
   productImage: {
     width: '100%',
