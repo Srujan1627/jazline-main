@@ -46,7 +46,45 @@ export default function LoginScreen() {
   const { login } = useAuth();
   const router = useRouter();
 
-  useEffect(() => { loadGoogleScript(); }, []);
+  useEffect(() => {
+    loadGoogleScript();
+    if (Platform.OS === 'web') {
+      const initGoogle = setInterval(() => {
+        const google = (window as any).google;
+        if (google && google.accounts && google.accounts.id) {
+          clearInterval(initGoogle);
+          const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID || '237070794063-3i6vkugt6n0n4s7ejhv7ace2hiumspjb.apps.googleusercontent.com';
+          
+          google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: async (response: any) => {
+              setGoogleLoading(true);
+              try {
+                const result = await loginWithGoogle(response.credential);
+                if (result.success) {
+                  await login(result.user, result.token);
+                  router.replace('/(tabs)/home');
+                }
+              } catch (err: any) {
+                showError(err.response?.data?.detail || err.message || 'Google sign-in failed');
+              } finally {
+                setGoogleLoading(false);
+              }
+            },
+          });
+          
+          const btnDiv = document.getElementById('google-btn-container');
+          if (btnDiv) {
+            google.accounts.id.renderButton(btnDiv, {
+              type: 'standard', theme: 'outline', size: 'large',
+              text: 'continue_with', width: 320,
+            });
+          }
+        }
+      }, 500);
+      return () => clearInterval(initGoogle);
+    }
+  }, []);
 
   const showError = (msg: string) => {
     if (Platform.OS === 'web') window.alert(msg);
@@ -80,57 +118,6 @@ export default function LoginScreen() {
     if (Platform.OS !== 'web') {
       showError('Google Sign-In is available on web only for now.');
       return;
-    }
-
-    setGoogleLoading(true);
-    try {
-      const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID || '237070794063-3i6vkugt6n0n4s7ejhv7ace2hiumspjb.apps.googleusercontent.com';
-      if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com') {
-        showError('Google Client ID not configured. To enable Google Sign-In, add EXPO_PUBLIC_GOOGLE_CLIENT_ID to frontend/.env');
-        setGoogleLoading(false);
-        return;
-      }
-
-      const google = (window as any).google;
-      if (!google?.accounts?.id) {
-        showError('Google Sign-In is still loading. Please try again.');
-        setGoogleLoading(false);
-        return;
-      }
-
-      google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: async (response: any) => {
-          try {
-            const result = await loginWithGoogle(response.credential);
-            if (result.success) {
-              await login(result.user, result.token);
-              router.replace('/(tabs)/home');
-            }
-          } catch (err: any) {
-            showError(err.response?.data?.detail || err.message || 'Google sign-in failed');
-          } finally {
-            setGoogleLoading(false);
-          }
-        },
-      });
-
-      google.accounts.id.prompt((notification: any) => {
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-          const btnDiv = document.getElementById('google-btn-container');
-          if (btnDiv) {
-            btnDiv.innerHTML = '';
-            google.accounts.id.renderButton(btnDiv, {
-              type: 'standard', theme: 'outline', size: 'large',
-              text: 'continue_with', width: 320,
-            });
-          }
-          setGoogleLoading(false);
-        }
-      });
-    } catch (error: any) {
-      showError(error.message || 'Google Sign-In failed');
-      setGoogleLoading(false);
     }
   };
 
@@ -222,23 +209,27 @@ export default function LoginScreen() {
                 </View>
 
                 {/* Google Sign In */}
-                <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn} disabled={googleLoading} activeOpacity={0.8}>
-                  {googleLoading ? (
-                    <ActivityIndicator color="#333" size="small" />
-                  ) : (
-                    <>
-                      <Image
-                        source={{ uri: 'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg' }}
-                        style={styles.googleIcon}
-                        defaultSource={require('../../assets/images/app-image.png')}
-                      />
-                      <Text style={styles.googleButtonText}>Continue with Google</Text>
-                    </>
-                  )}
-                </TouchableOpacity>
+                {!isWeb && (
+                  <TouchableOpacity style={styles.googleButton} onPress={handleGoogleSignIn} disabled={googleLoading} activeOpacity={0.8}>
+                    {googleLoading ? (
+                      <ActivityIndicator color="#333" size="small" />
+                    ) : (
+                      <>
+                        <Image
+                          source={{ uri: 'https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg' }}
+                          style={styles.googleIcon}
+                          defaultSource={require('../../assets/images/app-image.png')}
+                        />
+                        <Text style={styles.googleButtonText}>Continue with Google</Text>
+                      </>
+                    )}
+                  </TouchableOpacity>
+                )}
 
                 {isWeb && (
-                  <View style={styles.googleFallback} nativeID="google-btn-container" />
+                  <View style={styles.googleFallback} nativeID="google-btn-container">
+                    {googleLoading && <ActivityIndicator color="#333" size="small" />}
+                  </View>
                 )}
 
                 {/* Toggle */}
