@@ -1,7 +1,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-let rawBackendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || '';
+let rawBackendUrl = process.env.EXPO_PUBLIC_BACKEND_URL || 'https://jazline-backend-v84.onrender.com';
 if (rawBackendUrl && !rawBackendUrl.startsWith('http')) {
   rawBackendUrl = 'https://' + rawBackendUrl;
 }
