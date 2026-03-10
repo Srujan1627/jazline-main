@@ -15,7 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import { Colors } from '../../constants/Theme';
 
-const API_URL = process.env.EXPO_PUBLIC_BACKEND_URL + '/api';
+const API_URL = 'https://jazline-backend-v84.onrender.com/api';
 
 export default function KitDetailScreen() {
   const { id } = useLocalSearchParams();

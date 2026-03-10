@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import axios from 'axios';
 
-const API_URL = process.env.EXPO_PUBLIC_BACKEND_URL + '/api';
+const API_URL = 'https://jazline-backend-v84.onrender.com/api';
 
 interface Product {
   _id: string;

@@ -20,7 +20,7 @@ import { Product } from '../../types';
 import { Colors } from '../../constants/Theme';
 import axios from 'axios';
 
-const API_URL = (process.env.EXPO_PUBLIC_BACKEND_URL || 'http://127.0.0.1:8001') + '/api';
+const API_URL = 'https://jazline-backend-v84.onrender.com/api';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = Math.min(SCREEN_WIDTH * 0.42, 180);
 
