@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: jazline-backend
+    name: jazline-backend-v84
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
@@ -17,7 +17,7 @@ services:
         sync: false
 
   - type: web
-    name: jazline-frontend
+    name: jazline-frontend-v84
     env: node
     rootDir: frontend
     buildCommand: npm install && npm run build && cp serve.json dist/serve.json
@@ -26,7 +26,7 @@ services:
       - key: EXPO_PUBLIC_BACKEND_URL
         fromService:
           type: web
-          name: jazline-backend
+          name: jazline-backend-v84
           property: host
       - key: EXPO_PUBLIC_GOOGLE_CLIENT_ID
         sync: false
